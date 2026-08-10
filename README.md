@@ -26,9 +26,6 @@ A full-stack, end-to-end Indian Sign Language (ISL) recognition and translation 
 ### ML Pipeline & Data Management
 * **Integrated Dataset Collector:** Built-in UI for automated data capture and video recording.
 * **One-Click Pipeline:** Automated Python scripts for extracting landmarks and training all models simultaneously.
-  * *Clean Data Enforcement:* Automatically skips images and video frames if MediaPipe fails to detect a hand, preventing model degradation.
-  * *LSTM Sequence Normalization:* Automatically pads and downsamples video recordings into fixed 30-frame sequences for optimal Bi-LSTM training.
-  * *Static Words:* Extended support for static word classification (in addition to alphabets and numbers) using the high-accuracy 1D CNN.
 
 ### Production Ready Architecture
 * **FastAPI & Gunicorn:** High-performance, concurrent backend architecture.
@@ -113,6 +110,11 @@ Create the exact folder structure inside `raw_dataset/` and add your image/video
 Extract MediaPipe landmarks and generate CSV sequence data from your raw files:
 
     python scripts/build_all_dataset.py
+
+> **Dataset Builder Features:**
+> * **Clean Data Enforcement:** Automatically skips images and video frames if MediaPipe fails to detect a hand, preventing model degradation.
+> * **LSTM Sequence Normalization:** Automatically pads and downsamples video recordings into fixed 30-frame sequences for optimal Bi-LSTM training.
+> * **Static Words Support:** Extracts static word features (in addition to alphabets and numbers).
 
 ### 3. Train Models
 Train the Random Forest, CNN, and Bi-LSTM models simultaneously. The new models will be saved automatically to the `models/` directory:
