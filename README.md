@@ -26,6 +26,9 @@ A full-stack, end-to-end Indian Sign Language (ISL) recognition and translation 
 ### ML Pipeline & Data Management
 * **Integrated Dataset Collector:** Built-in UI for automated data capture and video recording.
 * **One-Click Pipeline:** Automated Python scripts for extracting landmarks and training all models simultaneously.
+  * *Clean Data Enforcement:* Automatically skips images and video frames if MediaPipe fails to detect a hand, preventing model degradation.
+  * *LSTM Sequence Normalization:* Automatically pads and downsamples video recordings into fixed 30-frame sequences for optimal Bi-LSTM training.
+  * *Static Words:* Extended support for static word classification (in addition to alphabets and numbers) using the high-accuracy 1D CNN.
 
 ### Production Ready Architecture
 * **FastAPI & Gunicorn:** High-performance, concurrent backend architecture.
