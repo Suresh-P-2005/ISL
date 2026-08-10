@@ -116,14 +116,6 @@ def create_app(config_object=None):
                 return f.read()
         return "<h1>ISL Translator - Login Page</h1>"
 
-    @app.get("/demo3d", response_class=HTMLResponse)
-    async def route_demo3d():
-        demo_path = os.path.join(config_object.TEMPLATES_DIR, "demo3d.html")
-        if os.path.exists(demo_path):
-            with open(demo_path, "r", encoding="utf-8") as f:
-                return f.read()
-        return "<h1>ISL Translator - 3D Live Interactive Showcase Page</h1>"
-
     @app.get("/favicon.ico", include_in_schema=False)
     async def favicon():
         # Serve an inline SVG favicon to prevent 404 log spam
