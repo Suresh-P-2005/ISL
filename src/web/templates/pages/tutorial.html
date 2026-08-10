@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="aurora">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ISL Translator · System Tutorial & Sign Dictionary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+<!-- Static Production Stylesheets -->
+<link rel="stylesheet" href="/static/css/main.css">
+<link rel="stylesheet" href="/static/css/tutorial.css">
+</head>
+<body>
+<canvas id="bg-canvas" style="position:fixed;inset:0;z-index:-2;width:100%;height:100%;pointer-events:none;"></canvas>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="nav-logo"><span class="material-icons-round">sign_language</span></div>
+    <div>
+      <div class="nav-title">ISL<span>Translator</span></div>
+      <div class="nav-sub">SYSTEM TUTORIAL & SIGNS</div>
+    </div>
+  </a>
+
+  <div class="nav-links">
+    <a href="/" class="nav-link"><span class="material-icons-round">videocam</span> Real-Time</a>
+    <a href="/upload" class="nav-link"><span class="material-icons-round">upload_file</span> File Test</a>
+    <a href="/collect" class="nav-link"><span class="material-icons-round">dataset</span> Collect</a>
+    <a href="/tutorial" class="nav-link active"><span class="material-icons-round">menu_book</span> Tutorial</a>
+  </div>
+
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-mode-btn" title="Toggle Light/Dark Mode" aria-label="Toggle Light/Dark Mode">
+      <span class="material-icons-round" id="theme-mode-icon">light_mode</span>
+    </button>
+
+    <button class="menu-btn" id="menu-btn" title="Open Navigation Menu" aria-label="Open Navigation Menu">
+      <span class="material-icons-round">menu</span>
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN APP SHELL -->
+<main class="app-shell fade-in">
+  <!-- Hero Section -->
+  <header class="hero-header">
+    <div class="hero-badge">
+      <span class="material-icons-round" style="font-size:14px;">auto_awesome</span> System Documentation & Dictionary
+    </div>
+    <h1 class="hero-title">Learn How to Operate ISL Translator</h1>
+    <p class="hero-subtitle">
+      Master sign language detection across Real-Time Vision, File Testing, and Dataset Collection. Browse the full system sign dictionary with posture descriptions below.
+    </p>
+  </header>
+
+  <!-- Guides Section -->
+  <div class="card">
+    <div class="section-header">
+      <div class="section-icon blue"><span class="material-icons-round">explore</span></div>
+      <h2 class="section-title">System Operational Guides</h2>
+    </div>
+    <div class="guides-grid">
+      <div class="guide-card">
+        <div class="guide-head">
+          <div class="guide-icon blue"><span class="material-icons-round">videocam</span></div>
+          <div class="guide-title">1. Real-Time Vision</div>
+        </div>
+        <div class="guide-steps">
+          <div class="guide-step"><span class="step-num">1</span><div>Click <strong>Initialize Vision</strong> to launch camera tracking.</div></div>
+          <div class="guide-step"><span class="step-num">2</span><div>Select <strong>WORD</strong> for 30f LSTM sentences, or <strong>ALPHA / NUM</strong> for static signs.</div></div>
+          <div class="guide-step"><span class="step-num">3</span><div>Use <strong>Refine AI</strong> to turn recognized words into fluent sentences.</div></div>
+        </div>
+        <a href="/" class="guide-link">Launch Real-Time <span class="material-icons-round" style="font-size:14px">arrow_forward</span></a>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-head">
+          <div class="guide-icon purple"><span class="material-icons-round">upload_file</span></div>
+          <div class="guide-title">2. File Tester</div>
+        </div>
+        <div class="guide-steps">
+          <div class="guide-step"><span class="step-num">1</span><div>Drag & drop any sign image (JPG/PNG) or video clip (MP4).</div></div>
+          <div class="guide-step"><span class="step-num">2</span><div>Choose mode (Alphabet / Number for photos, Word for video).</div></div>
+          <div class="guide-step"><span class="step-num">3</span><div>Click <strong>Run Neural Prediction</strong> to inspect engine results.</div></div>
+        </div>
+        <a href="/upload" class="guide-link">Launch File Tester <span class="material-icons-round" style="font-size:14px">arrow_forward</span></a>
+      </div>
+
+      <div class="guide-card">
+        <div class="guide-head">
+          <div class="guide-icon amber"><span class="material-icons-round">dataset</span></div>
+          <div class="guide-title">3. Dataset Collector</div>
+        </div>
+        <div class="guide-steps">
+          <div class="guide-step"><span class="step-num">1</span><div>Select sign category & label to record.</div></div>
+          <div class="guide-step"><span class="step-num">2</span><div>For static signs: capture 200 photos. For dynamic words: record 5s videos (20x).</div></div>
+          <div class="guide-step"><span class="step-num">3</span><div>Click <strong>Train Model Now</strong> to retrain neural classifiers!</div></div>
+        </div>
+        <a href="/collect" class="guide-link">Open Collector Studio <span class="material-icons-round" style="font-size:14px">arrow_forward</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sign Dictionary Section -->
+  <div class="card">
+    <div class="section-header">
+      <div class="section-icon green"><span class="material-icons-round">menu_book</span></div>
+      <h2 class="section-title">Actual System ISL Signs Dictionary</h2>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="material-icons-round search-icon">search</span>
+        <input class="search-input" id="dict-search" placeholder="Search system sign or posture description…">
+      </div>
+      <div class="filter-tabs" id="filter-tabs">
+        <button class="tab-btn active" data-filter="all">All Signs</button>
+        <button class="tab-btn" data-filter="alpha">Alphabets (A-Z)</button>
+        <button class="tab-btn" data-filter="num">Numbers (0-9)</button>
+        <button class="tab-btn" data-filter="static_word">📷 Static Words</button>
+        <button class="tab-btn" data-filter="word">🎬 Dynamic Words</button>
+        <button class="tab-btn" data-filter="1h">✋ 1 Hand</button>
+        <button class="tab-btn" data-filter="2h">✋✋ 2 Hands</button>
+      </div>
+    </div>
+
+    <div class="dict-grid" id="dict-grid"></div>
+  </div>
+</main>
+
+<!-- Slide-out Navigation Drawer -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="nav-brand">
+      <div class="nav-logo"><span class="material-icons-round">sign_language</span></div>
+      <div class="nav-title">ISL<span>Translator</span></div>
+    </div>
+    <button class="close-btn" id="close-btn" aria-label="Close menu"><span class="material-icons-round">close</span></button>
+  </div>
+  <div class="drawer-nav">
+    <a href="/" class="drawer-link"><span class="material-icons-round">videocam</span> Real-Time Vision</a>
+    <a href="/upload" class="drawer-link"><span class="material-icons-round">upload_file</span> File Dataset Test</a>
+    <a href="/collect" class="drawer-link"><span class="material-icons-round">dataset</span> Data Collector Studio</a>
+    <a href="/tutorial" class="drawer-link active"><span class="material-icons-round">menu_book</span> System Tutorial & Signs</a>
+  </div>
+</div>
+
+<!-- Static Production Script Modules -->
+<script src="/static/js/theme.js"></script>
+<script src="/static/js/ambient_mesh.js"></script>
+<script src="/static/js/auth.js?v=1.2"></script>
+<script src="/static/js/tutorial.js"></script>
+</body>
+</html>

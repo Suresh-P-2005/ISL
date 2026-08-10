@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="aurora">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ISL Translator · Dataset Collection Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+<!-- Static Production Stylesheets -->
+<link rel="stylesheet" href="/static/css/main.css?v=1.1">
+<link rel="stylesheet" href="/static/css/collect.css?v=1.1">
+</head>
+<body>
+<canvas id="bg-canvas" style="position:fixed;inset:0;z-index:-2;width:100%;height:100%;pointer-events:none;"></canvas>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="nav-logo"><span class="material-icons-round">sign_language</span></div>
+    <div>
+      <div class="nav-title">ISL<span>Translator</span></div>
+      <div class="nav-sub">DATASET STUDIO</div>
+    </div>
+  </a>
+
+  <div class="nav-links">
+    <a href="/" class="nav-link"><span class="material-icons-round">videocam</span> Real-Time</a>
+    <a href="/upload" class="nav-link"><span class="material-icons-round">upload_file</span> File Test</a>
+    <a href="/collect" class="nav-link active"><span class="material-icons-round">dataset</span> Collect</a>
+    <a href="/tutorial" class="nav-link"><span class="material-icons-round">menu_book</span> Tutorial</a>
+  </div>
+
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-mode-btn" title="Toggle Light/Dark Mode" aria-label="Toggle Light/Dark Mode">
+      <span class="material-icons-round" id="theme-mode-icon">light_mode</span>
+    </button>
+
+    <button class="menu-btn" id="menu-btn" title="Open Navigation Menu" aria-label="Open Navigation Menu">
+      <span class="material-icons-round">menu</span>
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN APP SHELL -->
+<main class="app-shell fade-in">
+  <div class="left-col">
+    <!-- Camera Viewport Card -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-icon blue"><span class="material-icons-round">videocam</span></div>
+        <div class="section-title">Collector Viewport</div>
+      </div>
+
+      <div class="video-wrap">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+
+        <div class="hand-status bad" id="hand-status">NO HAND DETECTED</div>
+        <div class="hands-count" id="hands-count">✋ 0/1 Hands</div>
+
+        <div class="rec-overlay" id="rec-overlay">
+          <div class="rec-dot"></div>
+          <div class="rec-text" id="rec-text">RECORDING SEQUENCE</div>
+          <div class="rec-counter" id="rec-timer">5.0</div>
+        </div>
+        <div class="rec-overlay" id="countdown-overlay" style="background:rgba(0,0,0,0.85);z-index:20;">
+          <div class="rec-text" style="color:var(--brand-primary)">GET READY</div>
+          <div class="rec-counter" id="countdown-num" style="font-size:5rem;color:var(--brand-primary)">3</div>
+        </div>
+      </div>
+
+      <button class="rec-btn photo" id="cam-btn" style="margin-top:1rem;">
+        <span class="material-icons-round">videocam</span> Start Collector Camera
+      </button>
+    </div>
+  </div>
+
+  <div class="right-col">
+    <!-- Control Form Card -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-icon purple"><span class="material-icons-round">tune</span></div>
+        <div class="section-title">Record Controls</div>
+      </div>
+
+      <div class="form-label">Sign Category</div>
+      <div class="mode-tab-group">
+        <button class="mode-tab mode-btn active" data-mode="alphabet">🔤 Alphabet</button>
+        <button class="mode-tab mode-btn" data-mode="number">🔢 Number</button>
+        <button class="mode-tab mode-btn" data-mode="static_word">📷 Static Word</button>
+        <button class="mode-tab mode-btn" data-mode="word">🎬 Dynamic Word</button>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Target Sign Label</div>
+        <select class="form-select" id="label-select"></select>
+      </div>
+
+      <div class="form-group" id="hand-req-selector-group">
+        <div class="form-label">Hand Requirement for Selected Sign</div>
+        <div style="display:flex; gap:8px;">
+          <label style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:8px 12px; border-radius:var(--r-md); background:var(--bg-glass); border:1px solid var(--border-mid); cursor:pointer; font-size:0.8rem; font-weight:700; color:var(--text-primary);">
+            <input type="radio" name="sign-hand-req" id="sign-hand-1" value="1" checked> ✋ 1 Hand
+          </label>
+          <label style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:8px 12px; border-radius:var(--r-md); background:var(--bg-glass); border:1px solid var(--border-mid); cursor:pointer; font-size:0.8rem; font-weight:700; color:var(--text-primary);">
+            <input type="radio" name="sign-hand-req" id="sign-hand-2" value="2"> ✋✋ 2 Hands
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label" id="progress-label">Progress</div>
+        <div style="height:6px;background:var(--bg-glass);border-radius:99px;overflow:hidden;border:1px solid var(--border-subtle);margin-bottom:4px;">
+          <div class="progress-fill" id="progress-fill" style="width:0%;height:100%;background:var(--brand-primary);"></div>
+        </div>
+        <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-muted);text-align:right;" id="progress-text">0 / 0</div>
+      </div>
+
+      <div id="image-controls">
+        <button class="rec-btn photo" id="capture-btn" disabled><span class="material-icons-round">photo_camera</span> Capture Photo (200x)</button>
+      </div>
+
+      <div id="video-controls" style="display:none;">
+        <button class="rec-btn video" id="record-btn" disabled><span class="material-icons-round">fiber_manual_record</span> Record Sign (5s)</button>
+      </div>
+    </div>
+
+    <!-- Add Custom Sign Card (Only shown for Static & Dynamic Word modes) -->
+    <div class="card" id="add-word-card" style="display:none;">
+      <div class="section-header">
+        <div class="section-icon blue"><span class="material-icons-round">add_circle</span></div>
+        <div class="section-title">Add Custom Sign to Dataset</div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">New Sign Name / Word</div>
+        <input class="form-control" id="new-sign-input" placeholder="e.g. Welcome, Water, School">
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Hand Requirement (for New Sign)</div>
+        <div style="display:flex; gap:8px;">
+          <label style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:8px 12px; border-radius:var(--r-md); background:var(--bg-glass); border:1px solid var(--border-mid); cursor:pointer; font-size:0.8rem; font-weight:700; color:var(--text-primary);">
+            <input type="radio" name="hand-req-radio" value="1" checked> ✋ 1 Hand
+          </label>
+          <label style="flex:1; display:flex; align-items:center; justify-content:center; gap:6px; padding:8px 12px; border-radius:var(--r-md); background:var(--bg-glass); border:1px solid var(--border-mid); cursor:pointer; font-size:0.8rem; font-weight:700; color:var(--text-primary);">
+            <input type="radio" name="hand-req-radio" value="2"> ✋✋ 2 Hands
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Posture Description (for Tutorial Dictionary)</div>
+        <input class="form-control" id="new-sign-desc" placeholder="e.g. Open palm gesture or specific posture">
+      </div>
+
+      <button class="rec-btn photo" id="add-word-btn" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);">
+        <span class="material-icons-round">add</span> Add Sign to Category & Dictionary
+      </button>
+    </div>
+
+    <!-- Stats & Retrain Card -->
+    <div class="card">
+      <div class="section-header">
+        <div class="section-icon amber"><span class="material-icons-round">analytics</span></div>
+        <div class="section-title">Dataset Telemetry</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val" id="stat-total">0</div><div class="stat-key">TOTAL</div></div>
+        <div class="stat-box"><div class="stat-val" id="stat-done">0</div><div class="stat-key">DONE</div></div>
+      </div>
+      <button class="rec-btn photo" id="train-btn" disabled style="margin-bottom:1rem;"><span class="material-icons-round">model_training</span> Train Model Now</button>
+      <div class="form-label">Activity Log</div>
+      <div class="log-box" id="log-box" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--text-secondary);max-height:120px;overflow-y:auto;"></div>
+    </div>
+  </div>
+</main>
+
+<!-- Slide-out Navigation Drawer -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="nav-brand">
+      <div class="nav-logo"><span class="material-icons-round">sign_language</span></div>
+      <div class="nav-title">ISL<span>Translator</span></div>
+    </div>
+    <button class="close-btn" id="close-btn" aria-label="Close menu"><span class="material-icons-round">close</span></button>
+  </div>
+  <div class="drawer-nav">
+    <a href="/" class="drawer-link"><span class="material-icons-round">videocam</span> Real-Time Vision</a>
+    <a href="/upload" class="drawer-link"><span class="material-icons-round">upload_file</span> File Dataset Test</a>
+    <a href="/collect" class="drawer-link active"><span class="material-icons-round">dataset</span> Data Collector Studio</a>
+    <a href="/tutorial" class="drawer-link"><span class="material-icons-round">menu_book</span> System Tutorial & Signs</a>
+  </div>
+</div>
+
+<!-- Static Production Script Modules -->
+<script src="/static/js/theme.js?v=1.1"></script>
+<script src="/static/js/ambient_mesh.js?v=1.1"></script>
+<script src="/static/js/auth.js?v=1.2"></script>
+<script src="/static/js/collect.js?v=1.1"></script>
+</body>
+</html>

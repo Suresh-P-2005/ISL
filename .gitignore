@@ -1,0 +1,26 @@
+# Virtual environments
+venv/
+env/
+.env
+
+# Cache and logs
+__pycache__/
+*.pyc
+.pytest_cache/
+logs/
+*.log
+
+# Databases
+data/users.db
+*.sqlite3
+*.db
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# If datasets or models are too large for GitHub (>100MB), you may want to ignore them:
+# models/
+# raw_dataset/
+# real_landmark_data/
+# video_landmark_data/

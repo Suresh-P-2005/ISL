@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="aurora">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ISL Translator - Secure Access Platform & Login Portal">
+<title>ISL Translator · Portal Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+<link rel="stylesheet" href="/static/css/main.css">
+<style>
+  /* FUTURISTIC NEON SCI-FI BACKDROP */
+  body {
+    background: var(--bg-base);
+    overflow: hidden;
+    position: relative;
+    min-height: 100vh;
+  }
+  
+  /* NEON GLOW BACKGROUND HALOS */
+  .neon-glow-cyan {
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(0, 242, 254, 0.22) 0%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: -2;
+  }
+  .neon-glow-purple {
+    position: absolute;
+    top: 50%;
+    left: 70%;
+    transform: translate(-50%, -50%);
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(186, 12, 248, 0.22) 0%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: -2;
+  }
+
+  /* ROTATING HUD CIRCLES */
+  .hud-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .hud-circle {
+    position: absolute;
+    border-radius: 50%;
+  }
+  .hud-1 {
+    width: 620px;
+    height: 620px;
+    border: 1px dashed rgba(0, 242, 254, 0.12);
+    animation: rotateCW 40s linear infinite;
+  }
+  .hud-2 {
+    width: 750px;
+    height: 750px;
+    border: 1px dashed rgba(186, 12, 248, 0.1);
+    animation: rotateCCW 60s linear infinite;
+  }
+  .hud-3 {
+    width: 480px;
+    height: 480px;
+    border: 2px dotted rgba(0, 242, 254, 0.08);
+    animation: rotateCW 20s linear infinite;
+  }
+  @keyframes rotateCW {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes rotateCCW {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+  }
+
+  /* AUTH CONTAINER SHELL */
+  .auth-shell {
+    min-height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    z-index: 10;
+    position: relative;
+  }
+
+  /* 3D PERSPECTIVE CARD ARCHITECTURE */
+  .auth-3d-perspective {
+    perspective: 1200px;
+    width: 100%;
+    max-width: 430px;
+  }
+  .auth-3d-card {
+    width: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.85s cubic-bezier(0.2, 1, 0.2, 1);
+  }
+  .auth-3d-card.flipped {
+    transform: rotateY(180deg);
+  }
+
+  /* PREMIUM GLASSMORPHIC CARD FACE */
+  .auth-card-face {
+    width: 100%;
+    background: rgba(10, 14, 26, 0.72);
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    padding: 2.5rem 2.25rem;
+    backdrop-filter: blur(35px);
+    -webkit-backdrop-filter: blur(35px);
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.75), 
+                inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    position: relative;
+  }
+  
+  /* NEON EDGE GLOW SHADOWS */
+  .auth-card-front {
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8),
+                -10px 0 50px var(--brand-glow),
+                10px 0 50px var(--accent-glow);
+  }
+  .auth-card-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotateY(180deg);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8),
+                10px 0 50px var(--brand-glow),
+                -10px 0 50px var(--accent-glow);
+  }
+
+  /* 3D Flip Hit-Testing Fixes */
+  .auth-3d-card:not(.flipped) .auth-card-back {
+    pointer-events: none !important;
+  }
+  .auth-3d-card.flipped .auth-card-front {
+    pointer-events: none !important;
+  }
+
+  /* BRAND HEADER */
+  .brand-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .brand-logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .brand-logo-img {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    box-shadow: 0 8px 20px var(--brand-glow);
+  }
+  .brand-title-text {
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+  }
+  .brand-title-text span {
+    color: var(--brand-primary);
+  }
+  .brand-subtitle-text {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* INPUT WRAPPERS WITH PREFIX ICONS */
+  .form-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .form-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+    padding-left: 2px;
+  }
+  .input-icon-container {
+    position: relative;
+    width: 100%;
+  }
+  .input-prefix-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 20px;
+    transition: color 0.25s ease;
+  }
+  .form-control {
+    width: 100%;
+    height: 48px;
+    padding: 0 46px 0 44px;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    color: #fff !important;
+    font-family: var(--font-ui);
+    font-size: 0.92rem;
+    transition: all 0.25s ease;
+    outline: none;
+  }
+  .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+  }
+  .form-control:focus {
+    border-color: var(--brand-primary);
+    background: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 0 14px var(--brand-glow);
+  }
+  .form-control:focus ~ .input-prefix-icon {
+    color: var(--brand-primary);
+  }
+
+  /* PASSWORD TOGGLE EYE */
+  .pass-toggle-btn {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    transition: color 0.2s ease;
+  }
+  .pass-toggle-btn:hover {
+    color: var(--brand-primary);
+  }
+
+  /* CENTRAL MESSAGE AREA */
+  .welcome-msg-block {
+    text-align: center;
+    margin: 1.75rem 0;
+  }
+  .welcome-msg-title {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .welcome-msg-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* 3D NEON BEVEL BUTTON */
+  .auth-btn-bevel {
+    width: 100%;
+    height: 52px;
+    border: none;
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
+    color: #fff;
+    font-size: 0.98rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    /* FUTURISTIC ANGLED BEVEL CORNER PATH */
+    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+    transition: transform 0.2s ease, filter 0.2s ease;
+    margin-top: 1rem;
+    box-shadow: 0 6px 20px var(--brand-glow);
+  }
+  .auth-btn-bevel:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+  .auth-btn-bevel:active {
+    transform: translateY(0);
+  }
+
+  /* HELPER LINKS */
+  .auth-links-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 1.5rem;
+    font-size: 0.82rem;
+  }
+  .auth-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+    cursor: pointer;
+  }
+  .auth-link:hover {
+    color: var(--brand-primary);
+    text-decoration: underline;
+  }
+
+  /* SOCIAL GOOGLE BUTTON */
+  .google-btn-glass {
+    width: 100%;
+    height: 46px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: all 0.25s ease;
+  }
+  .google-btn-glass:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  .google-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* ALERTS */
+  .alert-banner {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    margin-bottom: 1.25rem;
+    display: none;
+    line-height: 1.4;
+    text-align: center;
+  }
+  .alert-banner.err {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+  }
+  .alert-banner.ok {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #4ade80;
+  }
+
+  @media (max-width: 480px) {
+    .auth-card-face {
+      padding: 2rem 1.5rem;
+    }
+  }
+</style>
+</head>
+<body>
+<!-- NEON SPOTLIGHTS & HUD BG -->
+<div class="neon-glow-cyan"></div>
+<div class="neon-glow-purple"></div>
+<div class="hud-container">
+  <div class="hud-circle hud-1"></div>
+  <div class="hud-circle hud-2"></div>
+  <div class="hud-circle hud-3"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+  <a href="/login" class="nav-brand">
+    <div class="nav-logo">
+      <span class="material-icons-round">sign_language</span>
+    </div>
+    <div>
+      <div class="nav-title">ISL<span>Translator</span></div>
+      <div class="nav-sub">AUTHENTICATION PORTAL</div>
+    </div>
+  </a>
+
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-mode-btn" title="Toggle Light/Dark Mode" aria-label="Toggle Light/Dark Mode">
+      <span class="material-icons-round" id="theme-mode-icon">light_mode</span>
+    </button>
+  </div>
+</nav>
+
+<div class="auth-shell fade-in">
+  <div class="auth-3d-perspective">
+    <div class="auth-3d-card" id="auth-3d-card">
+
+      <!-- FRONT FACE: LOGIN -->
+      <div class="auth-card-face auth-card-front">
+        <div class="brand-header">
+          <div class="brand-logo-wrap">
+            <div class="brand-logo-img">
+              <span class="material-icons-round" style="font-size:28px">sign_language</span>
+            </div>
+            <div class="brand-title-text">ISL<span>PORTAL</span></div>
+          </div>
+          <div class="brand-subtitle-text">Secure Access Platform</div>
+        </div>
+
+        <div class="alert-banner" id="alert-banner-front"></div>
+
+        <form id="login-form" autocomplete="off">
+          <div class="form-group">
+            <div class="form-label">Username or Email</div>
+            <div class="input-icon-container">
+              <input class="form-control" id="login-username" placeholder="Username or Email" required autocomplete="off" value="">
+              <span class="material-icons-round input-prefix-icon">person</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">Password</div>
+            <div class="input-icon-container">
+              <input type="password" class="form-control" id="login-password" placeholder="••••••••" required autocomplete="new-password" value="">
+              <span class="material-icons-round input-prefix-icon">lock</span>
+              <button type="button" class="pass-toggle-btn" id="toggle-login-pass" title="Show/Hide Password">
+                <span class="material-icons-round" style="font-size:20px">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="welcome-msg-block">
+            <div class="welcome-msg-title">Welcome Back!</div>
+            <div class="welcome-msg-desc">Enter your credentials to access your dashboard.</div>
+          </div>
+
+          <button type="submit" class="auth-btn-bevel" id="login-btn">
+            SIGN IN
+          </button>
+        </form>
+
+        <div class="auth-links-wrap">
+          <a class="auth-link">Forgot Password?</a>
+          <a class="auth-link" id="btn-goto-register">Create an Account</a>
+        </div>
+
+        <button class="google-btn-glass">
+          <svg class="google-icon" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          Sign in with Google
+        </button>
+      </div>
+
+      <!-- BACK FACE: REGISTER -->
+      <div class="auth-card-face auth-card-back">
+        <div class="brand-header">
+          <div class="brand-logo-wrap">
+            <div class="brand-logo-img" style="background: linear-gradient(135deg, var(--brand-secondary), var(--brand-primary))">
+              <span class="material-icons-round" style="font-size:28px">person_add</span>
+            </div>
+            <div class="brand-title-text">ISL<span>PORTAL</span></div>
+          </div>
+          <div class="brand-subtitle-text">Join The Platform</div>
+        </div>
+
+        <div class="alert-banner" id="alert-banner-back"></div>
+
+        <form id="register-form" autocomplete="off">
+          <div class="form-group">
+            <div class="form-label">Username</div>
+            <div class="input-icon-container">
+              <input class="form-control" id="reg-username" placeholder="Choose a username" required autocomplete="off" value="">
+              <span class="material-icons-round input-prefix-icon">person</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">Email Address</div>
+            <div class="input-icon-container">
+              <input type="email" class="form-control" id="reg-email" placeholder="yourname@example.com" required autocomplete="off" value="">
+              <span class="material-icons-round input-prefix-icon">email</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">Password</div>
+            <div class="input-icon-container">
+              <input type="password" class="form-control" id="reg-password" placeholder="At least 6 characters" required minlength="6" autocomplete="new-password" value="">
+              <span class="material-icons-round input-prefix-icon">lock</span>
+              <button type="button" class="pass-toggle-btn" id="toggle-reg-pass" title="Show/Hide Password">
+                <span class="material-icons-round" style="font-size:20px">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="welcome-msg-block">
+            <div class="welcome-msg-title">Create Account</div>
+            <div class="welcome-msg-desc">Sign up to access all translation features.</div>
+          </div>
+
+          <button type="submit" class="auth-btn-bevel" id="reg-btn" style="background:linear-gradient(90deg, var(--brand-secondary), var(--brand-primary))">
+            REGISTER
+          </button>
+        </form>
+
+        <div class="auth-links-wrap">
+          <a class="auth-link" id="btn-goto-login">Already have an account? Sign In</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/theme.js"></script>
+<script src="/static/js/ambient_mesh.js"></script>
+<script src="/static/js/auth.js?v=1.2"></script>
+</body>
+</html>

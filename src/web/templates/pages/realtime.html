@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="aurora">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="ISL Translator — Real-time Indian Sign Language detection with LSTM, CNN, and Random Forest AI engines. Translate ISL to text and speech instantly.">
+<title>ISL Translator · Real-Time Vision</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+<!-- Static Production Stylesheets -->
+<link rel="stylesheet" href="/static/css/main.css">
+<link rel="stylesheet" href="/static/css/realtime.css">
+</head>
+<body>
+<canvas id="bg-canvas" style="position:fixed;inset:0;z-index:-2;width:100%;height:100%;pointer-events:none;"></canvas>
+
+<!-- NAVBAR -->
+<nav class="navbar" role="navigation" aria-label="Main navigation">
+  <a href="/" class="nav-brand" aria-label="ISL Translator Home">
+    <div class="nav-logo">
+      <span class="material-icons-round">sign_language</span>
+    </div>
+    <div>
+      <div class="nav-title">ISL<span>Translator</span></div>
+      <div class="nav-sub">LSTM · NEURAL ENGINE</div>
+    </div>
+  </a>
+
+  <div class="nav-center">
+    <a href="/" class="nav-link active" id="nav-realtime">
+      <span class="material-icons-round">videocam</span> Real-Time
+    </a>
+    <a href="/upload" class="nav-link" id="nav-upload">
+      <span class="material-icons-round">upload_file</span> File Test
+    </a>
+    <a href="/collect" class="nav-link" id="nav-collect">
+      <span class="material-icons-round">dataset</span> Collect
+    </a>
+    <a href="/tutorial" class="nav-link" id="nav-tutorial">
+      <span class="material-icons-round">menu_book</span> Tutorial
+    </a>
+  </div>
+
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-mode-btn" title="Toggle Light/Dark Mode" aria-label="Toggle Light/Dark Mode">
+      <span class="material-icons-round" id="theme-mode-icon">light_mode</span>
+    </button>
+
+    <button class="menu-btn" id="menu-btn" title="Open Navigation Menu" aria-label="Open Navigation Menu">
+      <span class="material-icons-round">menu</span>
+    </button>
+
+    <div class="status-pill offline" id="status-pill" aria-live="polite">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">OFFLINE</span>
+    </div>
+  </div>
+</nav>
+
+<!-- APP SHELL -->
+<main class="app-shell fade-in" role="main">
+  <div class="main-grid">
+    <!-- LEFT COL: Camera & Sentence Builder -->
+    <div class="left-col">
+      <div class="card">
+        <div class="section-header">
+          <div class="section-icon blue"><span class="material-icons-round">videocam</span></div>
+          <h2 class="section-title">Vision Feed</h2>
+        </div>
+        <div class="video-wrap">
+          <video id="video" playsinline autoplay muted></video>
+          <canvas id="canvas"></canvas>
+          <div class="cam-badge"><span class="material-icons-round">radar</span> Tracking</div>
+          <div class="cam-mode-badge word" id="cam-mode-badge">WORD · LSTM</div>
+        </div>
+      </div>
+
+      <!-- SENTENCE BUILDER -->
+      <div class="card sentence-row">
+        <div class="section-header">
+          <div class="section-icon purple"><span class="material-icons-round">forum</span></div>
+          <h2 class="section-title">Sentence Builder</h2>
+        </div>
+        <div class="sentence-inner">
+          <div class="sentence-left">
+            <div class="pause-indicator signing" id="pause-indicator">
+              <span class="material-icons-round" id="pause-icon">gesture</span>
+              <span id="pause-text">SIGNING...</span>
+              <div class="pause-bar-track"><div class="pause-bar-fill" id="pause-bar" style="width:0%"></div></div>
+            </div>
+            <div class="word-chips" id="word-chips"></div>
+            <div class="sentence-display" id="sentence-display">—</div>
+            <div class="sentence-tr" id="sentence-tr"></div>
+          </div>
+          <div class="sentence-actions">
+            <button class="action-btn magic" id="magic-btn"><span class="material-icons-round">auto_awesome</span> Refine AI</button>
+            <button class="action-btn speak" id="speak-sentence-btn"><span class="material-icons-round">volume_up</span> Speak</button>
+            <button class="action-btn copy" id="copy-btn"><span class="material-icons-round">content_copy</span> Copy</button>
+            <button class="action-btn clear" id="clear-btn"><span class="material-icons-round">delete_sweep</span> Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COL: Detection & Controls -->
+    <div class="right-col">
+      <!-- Detected Sign Card -->
+      <div class="card">
+        <div class="section-header">
+          <div class="section-icon green"><span class="material-icons-round">psychology</span></div>
+          <h2 class="section-title">Recognized Sign</h2>
+        </div>
+        <div class="sign-display-card" id="sign-display">
+          <div class="sign-label-text">PREDICTED SIGN</div>
+          <div class="sign-char" id="result-char">---</div>
+          <div class="sign-orig" id="result-orig">---</div>
+          <div class="sign-tr" id="result-tr"></div>
+          <div class="sign-lang" id="result-lang"></div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-row">
+            <div class="metric-label">Confidence</div>
+            <div class="metric-track"><div class="metric-fill" id="conf-bar" style="width:0%"></div></div>
+            <div class="metric-value" id="conf-val">0%</div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-label">Stability</div>
+            <div class="stab-dots">
+              <div class="stab-dot" id="stab0"></div><div class="stab-dot" id="stab1"></div>
+              <div class="stab-dot" id="stab2"></div><div class="stab-dot" id="stab3"></div>
+              <div class="stab-dot" id="stab4"></div>
+            </div>
+            <div class="metric-value" id="stability-text">0/3</div>
+          </div>
+          <div class="metric-row">
+            <div class="metric-label">Engine</div>
+            <div class="engine-badge" id="engine-val">LSTM</div>
+            <div class="metric-value" id="latency-val">0ms</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Card -->
+      <div class="card">
+        <div class="section-header">
+          <div class="section-icon amber"><span class="material-icons-round">tune</span></div>
+          <h2 class="section-title">Mode & Engine</h2>
+        </div>
+        <div class="ctrl-label">Detection Mode</div>
+        <div class="mode-group">
+          <button class="mode-btn active word" data-mode="word">WORD<span class="mode-btn-sub">LSTM 30f</span></button>
+          <button class="mode-btn static_word" data-mode="static_word">S-WORD<span class="mode-btn-sub">Static</span></button>
+          <button class="mode-btn alpha" data-mode="alphabet">ALPHA<span class="mode-btn-sub">A-Z</span></button>
+          <button class="mode-btn num" data-mode="number">NUM<span class="mode-btn-sub">0-9</span></button>
+        </div>
+
+        <div class="ctrl-label">Engine Classifier</div>
+        <div class="engine-group">
+          <button class="eng-btn active" data-eng="auto">AUTO</button>
+          <button class="eng-btn" data-eng="rf">RF</button>
+          <button class="eng-btn" data-eng="cnn">CNN</button>
+          <button class="eng-btn" data-eng="ensemble">ENS</button>
+        </div>
+
+        <div class="ctrl-label">Translation Language</div>
+        <select class="lang-select" id="lang-select">
+          <option value="en-US">English (Default)</option>
+          <option value="ta-IN">Tamil (தமிழ்)</option>
+          <option value="hi-IN">Hindi (हिंदी)</option>
+          <option value="te-IN">Telugu (తెలుగు)</option>
+          <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
+          <option value="ml-IN">Malayalam (മലയാളം)</option>
+          <option value="mr-IN">Marathi (मराठी)</option>
+          <option value="bn-IN">Bengali (বাংলা)</option>
+          <option value="fr-FR">French (Français)</option>
+          <option value="de-DE">German (Deutsch)</option>
+          <option value="es-ES">Spanish (Español)</option>
+          <option value="ar-SA">Arabic (العربية)</option>
+        </select>
+
+        <div class="tts-row">
+          <button class="tts-btn on" id="tts-btn"><span class="material-icons-round" id="tts-icon">volume_up</span><span id="tts-label">TTS ON</span></button>
+          <select class="speed-sel" id="speed-sel">
+            <option value="0.8">0.8x</option><option value="1.0" selected>1.0x</option><option value="1.2">1.2x</option>
+          </select>
+        </div>
+
+        <div class="backend-row">
+          <input type="text" class="backend-input" id="backend-input" value="http://127.0.0.1:5000">
+          <button class="link-btn" id="link-btn">LINK</button>
+        </div>
+
+        <button class="vision-btn start" id="vision-btn">
+          <span class="material-icons-round">play_circle</span> Initialize Vision
+        </button>
+      </div>
+
+      <!-- Stats Card -->
+      <div class="card">
+        <div class="section-header">
+          <div class="section-icon blue"><span class="material-icons-round">bar_chart</span></div>
+          <h2 class="section-title">Session Telemetry</h2>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-tile"><div class="stat-num" id="stat-total">0</div><div class="stat-lbl">SIGNS</div></div>
+          <div class="stat-tile"><div class="stat-num" id="stat-words">0</div><div class="stat-lbl">WORDS</div></div>
+          <div class="stat-tile"><div class="stat-num" id="stat-conf">0%</div><div class="stat-lbl">AVG CONF</div></div>
+        </div>
+        <div class="history-list" id="history-list"></div>
+      </div>
+    </div>
+  </div>
+<!-- Slide-out Navigation Drawer -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="nav-brand">
+      <div class="nav-logo"><span class="material-icons-round">sign_language</span></div>
+      <div class="nav-title">ISL<span>Translator</span></div>
+    </div>
+    <button class="close-btn" id="close-btn" aria-label="Close menu"><span class="material-icons-round">close</span></button>
+  </div>
+  <div class="drawer-nav">
+    <a href="/" class="drawer-link active"><span class="material-icons-round">videocam</span> Real-Time Vision</a>
+    <a href="/upload" class="drawer-link"><span class="material-icons-round">upload_file</span> File Dataset Test</a>
+    <a href="/collect" class="drawer-link"><span class="material-icons-round">dataset</span> Data Collector Studio</a>
+    <a href="/tutorial" class="drawer-link"><span class="material-icons-round">menu_book</span> System Tutorial & Signs</a>
+  </div>
+</div>
+
+<!-- Static Production Script Modules -->
+<script src="/static/js/theme.js"></script>
+<script src="/static/js/ambient_mesh.js"></script>
+<script src="/static/js/auth.js?v=1.2"></script>
+<script src="/static/js/realtime.js"></script>
+</body>
+</html>

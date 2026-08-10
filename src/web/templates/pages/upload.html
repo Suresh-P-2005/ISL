@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="aurora">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ISL Translator · File Test & Dataset Predictor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+<!-- Static Production Stylesheets -->
+<link rel="stylesheet" href="/static/css/main.css">
+<link rel="stylesheet" href="/static/css/upload.css">
+</head>
+<body>
+<canvas id="bg-canvas" style="position:fixed;inset:0;z-index:-2;width:100%;height:100%;pointer-events:none;"></canvas>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="nav-logo"><span class="material-icons-round">sign_language</span></div>
+    <div>
+      <div class="nav-title">ISL<span>Translator</span></div>
+      <div class="nav-sub">FILE TESTER</div>
+    </div>
+  </a>
+
+  <div class="nav-links">
+    <a href="/" class="nav-link"><span class="material-icons-round">videocam</span> Real-Time</a>
+    <a href="/upload" class="nav-link active"><span class="material-icons-round">upload_file</span> File Test</a>
+    <a href="/collect" class="nav-link"><span class="material-icons-round">dataset</span> Collect</a>
+    <a href="/tutorial" class="nav-link"><span class="material-icons-round">menu_book</span> Tutorial</a>
+  </div>
+
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-mode-btn" title="Toggle Light/Dark Mode" aria-label="Toggle Light/Dark Mode">
+      <span class="material-icons-round" id="theme-mode-icon">light_mode</span>
+    </button>
+
+    <button class="menu-btn" id="menu-btn" title="Open Navigation Menu" aria-label="Open Navigation Menu">
+      <span class="material-icons-round">menu</span>
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="app-shell fade-in">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon purple"><span class="material-icons-round">cloud_upload</span></div>
+      <div>
+        <div class="card-title">File Dataset Tester</div>
+        <div class="card-subtitle">Upload ISL image photos or video sequence clips</div>
+      </div>
+    </div>
+
+    <!-- Drop Zone -->
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <input type="file" id="file-input" accept="image/*,video/*">
+      <div class="dz-icon"><span class="material-icons-round">upload_file</span></div>
+      <div class="dz-title">Drag & Drop file here or click to browse</div>
+      <div class="dz-sub">Supports JPG, PNG, WEBP photos and MP4, WEBM, AVI sequence videos</div>
+      <div class="file-chip" id="file-chip" style="display:none; margin-top:8px;">
+        <span class="material-icons-round" style="font-size:16px">check_circle</span>
+        <span id="file-name">filename.jpg</span>
+      </div>
+    </div>
+
+    <div class="ctrl-label">Engine Test Mode</div>
+    <select class="mode-select" id="mode-select" aria-label="Engine Mode">
+      <option value="alphabet">🔤 Alphabet Posture (Random Forest / CNN)</option>
+      <option value="number">🔢 Number Gesture (Random Forest / CNN)</option>
+      <option value="static_word">📷 Static Word Sign (Random Forest / CNN)</option>
+      <option value="word">🎬 Dynamic Word Sequence (30f LSTM Neural Network)</option>
+    </select>
+
+    <!-- Preview Box -->
+    <div class="preview-wrap" id="preview-wrap">
+      <img id="preview-img" style="display:none;" alt="Image preview">
+      <video id="preview-vid" style="display:none;" controls muted loop></video>
+      <canvas id="preview-canvas"></canvas>
+    </div>
+
+    <button class="process-btn" id="process-btn" disabled>
+      <span class="material-icons-round">play_arrow</span> Run Neural Prediction
+    </button>
+
+    <!-- Result Card -->
+    <div class="result-card" id="result-box" style="display:none;">
+      <div class="result-tag" id="res-tag">Detected Sign</div>
+      <div class="result-label" id="res-val">---</div>
+      <div class="result-meta">
+        <div class="result-badge conf" id="res-conf">CONF: --</div>
+        <div class="result-badge engine" id="res-eng">ENG: --</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Slide-out Navigation Drawer -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="nav-brand">
+      <div class="nav-logo"><span class="material-icons-round">sign_language</span></div>
+      <div class="nav-title">ISL<span>Translator</span></div>
+    </div>
+    <button class="close-btn" id="close-btn" aria-label="Close menu"><span class="material-icons-round">close</span></button>
+  </div>
+  <div class="drawer-nav">
+    <a href="/" class="drawer-link"><span class="material-icons-round">videocam</span> Real-Time Vision</a>
+    <a href="/upload" class="drawer-link active"><span class="material-icons-round">upload_file</span> File Dataset Test</a>
+    <a href="/collect" class="drawer-link"><span class="material-icons-round">dataset</span> Data Collector Studio</a>
+    <a href="/tutorial" class="drawer-link"><span class="material-icons-round">menu_book</span> System Tutorial & Signs</a>
+  </div>
+</div>
+
+<!-- Static Production Script Modules -->
+<script src="/static/js/theme.js"></script>
+<script src="/static/js/ambient_mesh.js"></script>
+<script src="/static/js/auth.js?v=1.2"></script>
+<script src="/static/js/upload.js"></script>
+</body>
+</html>

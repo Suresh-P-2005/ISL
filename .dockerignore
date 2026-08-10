@@ -1,0 +1,8 @@
+venv/
+.git/
+__pycache__/
+*.pyc
+raw_dataset/
+real_landmark_data/
+video_landmark_data/
+.pytest_cache/
