@@ -107,7 +107,7 @@ If you want to train the models from scratch or add custom signs, follow these s
 Create the exact folder structure inside `raw_dataset/` and add your image/video samples.
 
 ### 2. Build Landmark Dataset
-Extract MediaPipe landmarks and generate CSV sequence data from your raw files:
+Open your terminal (ensure your virtual environment is activated) and run the following command from the root of the project to extract MediaPipe landmarks and generate CSV sequence data:
 
     python scripts/build_all_dataset.py
 
@@ -117,9 +117,11 @@ Extract MediaPipe landmarks and generate CSV sequence data from your raw files:
 > * **Static Words Support:** Extracts static word features (in addition to alphabets and numbers).
 
 ### 3. Train Models
-Train the Random Forest, CNN, and Bi-LSTM models simultaneously. The new models will be saved automatically to the `models/` directory:
+Next, run the following command in your terminal. This will read the generated CSVs and train the Random Forest, CNN, and Bi-LSTM models simultaneously. The new models will be saved automatically to the `models/` directory:
 
     python scripts/train_all_models.py
+
+> **Note:** Once training is complete, restart your web server (`python scripts/run_dev.py`) so the backend can load the newly trained models!
 
 ---
 
