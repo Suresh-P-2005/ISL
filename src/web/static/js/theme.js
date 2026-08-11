@@ -62,22 +62,36 @@ const ThemeManager = {
       el.style.display = isAdmin ? '' : 'none';
     });
 
-    // Inject User Badge & Logout in navbar right section
-    const navRight = document.querySelector('.nav-right');
-    if (navRight && session && !document.getElementById('user-badge-wrap')) {
+    // Inject User Badge & Logout in drawer nav
+    const drawerNav = document.querySelector('.drawer-nav');
+    if (drawerNav && session && !document.getElementById('drawer-user-badge')) {
+      const divider = document.createElement('div');
+      divider.style.cssText = 'height:1px;background:var(--border-subtle);margin:12px 0 4px 0;';
+      
       const userWrap = document.createElement('div');
-      userWrap.id = 'user-badge-wrap';
-      userWrap.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border-radius:12px;background:var(--bg-glass);border:1px solid var(--border-mid);font-size:0.75rem;font-weight:700;color:var(--text-primary);';
+      userWrap.id = 'drawer-user-badge';
+      userWrap.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:var(--r-md);background:var(--bg-glass);border:1px solid var(--border-mid);margin-top:4px;';
+      
       userWrap.innerHTML = `
-        <span class="material-icons-round" style="font-size:16px;color:var(--brand-primary)">account_circle</span>
-        <span>${session.username}</span>
-        <span style="font-size:0.65rem;padding:2px 6px;border-radius:6px;background:${isAdmin?'rgba(239,68,68,0.2)':'rgba(59,130,246,0.2)'};color:${isAdmin?'#f87171':'#60a5fa'}">${session.role}</span>
-        <button id="logout-btn" title="Log Out" style="background:none;border:none;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;padding:2px;"><span class="material-icons-round" style="font-size:16px">logout</span></button>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="material-icons-round" style="font-size:24px;color:var(--brand-primary)">account_circle</span>
+          <div style="display:flex;flex-direction:column;line-height:1.2;">
+            <span style="font-size:0.9rem;font-weight:700;color:var(--text-primary);">${session.username}</span>
+            <span style="font-size:0.65rem;font-weight:700;text-transform:uppercase;color:${isAdmin?'#f87171':'#60a5fa'}">${session.role}</span>
+          </div>
+        </div>
+        <button id="logout-btn" title="Log Out" style="background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:6px;border-radius:8px;transition:all 0.2s;">
+          <span class="material-icons-round" style="font-size:18px">logout</span>
+        </button>
       `;
-      navRight.insertBefore(userWrap, navRight.firstChild);
+      
+      drawerNav.appendChild(divider);
+      drawerNav.appendChild(userWrap);
 
       const logoutBtn = document.getElementById('logout-btn');
       if (logoutBtn) {
+        logoutBtn.addEventListener('mouseenter', () => { logoutBtn.style.background = 'var(--danger)'; logoutBtn.style.color = '#fff'; });
+        logoutBtn.addEventListener('mouseleave', () => { logoutBtn.style.background = 'var(--danger-bg)'; logoutBtn.style.color = 'var(--danger)'; });
         logoutBtn.addEventListener('click', () => {
           localStorage.removeItem('isl_session');
           window.location.href = '/login';
