@@ -141,3 +141,35 @@ class AuthService:
             return data
         except Exception:
             return None
+
+    def get_all_users(self) -> list:
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            cursor.execute("SELECT id, username, email, role, created_at FROM users ORDER BY created_at DESC")
+            return [dict(row) for row in cursor.fetchall()]
+
+    def update_user_role(self, user_id: int, new_role: str) -> bool:
+        if new_role not in ["ADMIN", "USER"]:
+            raise ValueError("Invalid role specified.")
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            # Prevent removing the only admin if possible, but for now just update.
+            cursor.execute("UPDATE users SET role = ? WHERE id = ?", (new_role, user_id))
+            if cursor.rowcount == 0:
+                raise ValueError("User not found.")
+            return True
+
+    def delete_user(self, user_id: int) -> bool:
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            # Prevent deleting the default 'admin' account to ensure the system is always accessible
+            cursor.execute("SELECT username FROM users WHERE id = ?", (user_id,))
+            row = cursor.fetchone()
+            if row and row[0].lower() == 'admin':
+                raise ValueError("Cannot delete the root admin account.")
+            
+            cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+            if cursor.rowcount == 0:
+                raise ValueError("User not found.")
+            return True

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="deep-space" data-mode="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ISL Translator - Administration</title>
+
+  <!-- Google Fonts & Material Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/main.css?v=1.1">
+  <link rel="stylesheet" href="/static/css/admin.css?v=1.0">
+</head>
+<body>
+<canvas id="bg-canvas" style="position:fixed;inset:0;z-index:-2;width:100%;height:100%;pointer-events:none;"></canvas>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="/" class="nav-brand">
+    <div class="nav-logo"><span class="material-icons-round">security</span></div>
+    <div>
+      <div class="nav-title">ISL<span>Translator</span></div>
+      <div class="nav-sub">CONTROL PANEL</div>
+    </div>
+  </a>
+
+  <div class="nav-right">
+    <button class="theme-btn" id="theme-mode-btn" title="Toggle Light/Dark Mode" aria-label="Toggle Light/Dark Mode">
+      <span class="material-icons-round" id="theme-mode-icon">light_mode</span>
+    </button>
+    <button class="menu-btn" id="menu-btn" title="Open Navigation Menu" aria-label="Open Navigation Menu">
+      <span class="material-icons-round">menu</span>
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN APP SHELL -->
+<main class="app-shell fade-in">
+  <div class="container-center">
+    
+    <div class="card header-card">
+      <div class="header-content">
+        <div class="header-icon-wrap"><span class="material-icons-round">manage_accounts</span></div>
+        <div class="header-text">
+          <h1>User Administration</h1>
+          <p>Manage registered accounts, roles, and system access.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card table-card">
+      <div class="table-actions">
+        <div class="search-box">
+          <span class="material-icons-round">search</span>
+          <input type="text" id="user-search" placeholder="Search by username or email...">
+        </div>
+        <button class="btn-refresh" id="refresh-btn">
+          <span class="material-icons-round">refresh</span>
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Joined Date</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="user-table-body">
+            <!-- Populated by JS -->
+            <tr><td colspan="6" style="text-align:center;padding:2rem;">Loading users...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- SLIDE-OUT MENU DRAWER -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Menu</div>
+    <button class="close-btn" id="drawer-close"><span class="material-icons-round">close</span></button>
+  </div>
+  <div class="drawer-nav">
+    <a href="/" class="drawer-link"><span class="material-icons-round">videocam</span> Real-Time Vision</a>
+    <a href="/upload" class="drawer-link"><span class="material-icons-round">upload_file</span> File Dataset Test</a>
+    <a href="/collect" class="drawer-link"><span class="material-icons-round">dataset</span> Data Collector Studio</a>
+    <a href="/tutorial" class="drawer-link"><span class="material-icons-round">menu_book</span> System Tutorial & Signs</a>
+  </div>
+</div>
+
+<!-- Static Production Script Modules -->
+<script src="/static/js/theme.js?v=2.0"></script>
+<script src="/static/js/ambient_mesh.js"></script>
+<script src="/static/js/auth.js?v=1.2"></script>
+<script src="/static/js/admin.js?v=1.0"></script>
+</body>
+</html>

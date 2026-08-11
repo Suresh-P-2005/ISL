@@ -116,6 +116,14 @@ def create_app(config_object=None):
                 return f.read()
         return "<h1>ISL Translator - Login Page</h1>"
 
+    @app.get("/admin", response_class=HTMLResponse)
+    async def route_admin():
+        admin_path = os.path.join(config_object.TEMPLATES_DIR, "admin.html")
+        if os.path.exists(admin_path):
+            with open(admin_path, "r", encoding="utf-8") as f:
+                return f.read()
+        return "<h1>ISL Translator - Admin Page Not Found</h1>"
+
     @app.get("/favicon.ico", include_in_schema=False)
     async def favicon():
         # Serve an inline SVG favicon to prevent 404 log spam

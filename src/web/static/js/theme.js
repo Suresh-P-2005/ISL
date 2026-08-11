@@ -65,6 +65,17 @@ const ThemeManager = {
     // Inject User Badge & Logout in drawer nav
     const drawerNav = document.querySelector('.drawer-nav');
     if (drawerNav && session && !document.getElementById('drawer-user-badge')) {
+      // Inject Admin Panel Link if user is ADMIN
+      if (isAdmin && !document.getElementById('drawer-admin-link')) {
+        const adminLink = document.createElement('a');
+        adminLink.id = 'drawer-admin-link';
+        adminLink.href = '/admin';
+        adminLink.className = 'drawer-link';
+        adminLink.innerHTML = `<span class="material-icons-round">security</span> Administration`;
+        // Insert right after the last standard link, but before the divider
+        drawerNav.appendChild(adminLink);
+      }
+
       const divider = document.createElement('div');
       divider.style.cssText = 'height:1px;background:var(--border-subtle);margin:12px 0 4px 0;';
       
