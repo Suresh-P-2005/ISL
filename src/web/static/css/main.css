@@ -206,16 +206,6 @@ body::before {
 .nav-title span { color: var(--brand-primary); }
 .nav-sub { font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
 
-.nav-center, .nav-links { display:flex; align-items:center; gap:6px; }
-.nav-link {
-  display: flex; align-items: center; gap: 6px; padding: 8px 14px;
-  border-radius: var(--r-md); font-size: 0.78rem; font-weight: 600;
-  text-decoration: none; color: var(--text-secondary); border: 1px solid transparent;
-  transition: all var(--t-mid);
-}
-.nav-link:hover { color:var(--text-primary); border-color:var(--border-mid); }
-.nav-link.active { color:var(--brand-primary); background:rgba(56,189,248,0.1); border-color:rgba(56,189,248,0.25); }
-.nav-link .material-icons-round { font-size:16px; }
 
 .nav-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
 .theme-btn {
@@ -309,11 +299,7 @@ body::before {
   .navbar { height: auto; min-height: 56px; padding: 0.5rem 0.75rem; flex-wrap: wrap; gap: 6px; }
   .nav-brand { gap: 8px; }
   .nav-sub { display: none; }
-  .nav-center, .nav-links {
-    width: 100%; order: 3; overflow-x: auto; padding: 4px 0; gap: 4px;
-    -webkit-overflow-scrolling: touch; border-top: 1px solid var(--border-subtle);
-  }
-  .nav-link { padding: 6px 10px; font-size: 0.72rem; white-space: nowrap; flex-shrink: 0; }
+
   .theme-select { max-width: 130px; font-size: 0.7rem; }
   .status-pill { font-size: 0.55rem; padding: 4px 8px; }
   .card { padding: 1rem; border-radius: var(--r-md); }
