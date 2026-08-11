@@ -19,6 +19,7 @@ A full-stack, end-to-end Indian Sign Language (ISL) recognition and translation 
 * **Static Sign Recognition:** High-accuracy static gesture classification using 1D CNNs and Random Forests.
 
 ### Application Layer
+* **Administration Dashboard:** Secure control panel for managing users, promoting administrators, and deleting accounts.
 * **Multi-lingual Translation:** Natively translates recognized signs (and digits 0-9) into 11 regional languages (e.g., Tamil, Hindi, French).
 * **Sentence Builder:** Automatically concatenates recognized words into logical sequences.
 * **Text-to-Speech (TTS):** Built-in Web Speech API for text-to-speech feedback across multiple languages.
@@ -81,6 +82,8 @@ To run the application locally with hot-reloading:
 * **Live App:** http://127.0.0.1:5000
 * **Dataset Collector:** http://127.0.0.1:5000/collect
 * **Upload Tester:** http://127.0.0.1:5000/upload
+* **System Tutorial:** http://127.0.0.1:5000/tutorial
+* **Admin Control Panel:** http://127.0.0.1:5000/admin (Requires ADMIN login)
 
 ---
 
